@@ -1,0 +1,37 @@
+# omokoda-mesh-os package list
+# Base archiso releng packages trimmed + gateway-node additions.
+# Extend, don't fork — add packages here rather than hand-editing images.
+
+base
+linux
+linux-firmware
+mkinitcpio
+mkinitcpio-archiso
+systemd
+systemd-sysvcompat
+
+# networking
+networkmanager
+iwd
+openssh
+usb_modeswitch
+modemmanager
+
+# LoRa / SDR / serial tooling for gateway bridge duties
+python
+python-pip
+picocom
+minicom
+i2c-tools
+
+# reticulum + bridge runtime deps
+python-cryptography
+python-netifaces
+python-pyserial
+
+# base tooling
+git
+vim
+sudo
+htop
+tmux
