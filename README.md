@@ -14,7 +14,45 @@ stays scoped to `omokoda-mesh` firmware nodes and the personal device spec.
 
 ## Status
 
-Doc + scaffold stage. Not yet built or booted.
+**Builds and boots.** Verified on x86_64:
+
+```
+omokoda-mesh-os-<version>-x86_64.iso       626M
+ISO 9660 ... 'OMOKODA_MESH' (bootable)     El Torito BIOS + UEFI, isohybrid MBR+GPT
+Arch Linux 7.2.6-arch2-1 (ttyS0)  ->  archiso login:      zero failed units
+[  OK  ] Finished omokoda-mesh-os gateway first-boot setup.
+```
+
+Not yet exercised: **UEFI boot** (the UEFI entry is present and valid; only BIOS has
+been booted) and the **bridge runtime** against the generated `gateway.conf`.
+
+### Known gaps
+
+- `RETICULUM_CONFIG_DIR` is referenced by `first-boot.sh` but **Reticulum is not in
+  `packages.x86_64`** — add `python-rns` (or equivalent) before that path does anything.
+- PXE hooks (`archiso_pxe_nbd/nfs/http`) remain in the mkinitcpio `HOOKS` and pull
+  dependencies (`ipconfig`, `nbd-client`, `nfsmount`) that are not packaged, producing
+  non-fatal build warnings. Trim the hooks if PXE boot is not wanted.
+- Inherited from the archiso releng reference profile and **not yet reviewed for a
+  deployed gateway node**: tty1 autologin, `sshd` enabled, cloud-init units, Hyper-V /
+  VMware / VirtualBox guest tools, livecd helpers. Correct for an install medium;
+  needs a deliberate decision for a production image.
+
+### Build requirements
+
+`mkarchiso` requires **x86_64** — it cannot run on arm64/Termux. Build on Arch or in a
+privileged Arch container:
+
+```
+docker run --rm --privileged \
+  -v "$PWD":/src -v "$PWD/work":/work -v "$PWD/out":/out \
+  archlinux:latest bash -c 'pacman -Sy --noconfirm --needed archiso && \
+    mkarchiso -v -w /work -o /out /src/profile'
+```
+
+Needs roughly 3-5GB of free space; the ISO lands in `out/`. The image is built with
+`zstd -19`, so expect the squashfs step to be slow on a low-core host.
+
 
 ## Layout
 
