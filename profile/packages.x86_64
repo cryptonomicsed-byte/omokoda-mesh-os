@@ -35,3 +35,6 @@ vim
 sudo
 htop
 tmux
+
+# required by the bios.syslinux bootmode
+syslinux

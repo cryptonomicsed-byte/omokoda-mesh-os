@@ -1,13 +1,14 @@
 [Unit]
 Description=omokoda-mesh-os gateway first-boot setup
 ConditionPathExists=!/var/lib/omokoda/first-boot-done
-After=network-online.target
-Wants=network-online.target
+# Deliberately NO network dependency — this only writes local config files.
+# Offline Sovereignty Invariant: must run with zero connectivity.
 
 [Service]
 Type=oneshot
 ExecStart=/opt/omokoda-mesh-os/scripts/first-boot.sh
 RemainAfterExit=yes
+StandardOutput=journal+console
 
 [Install]
 WantedBy=multi-user.target
